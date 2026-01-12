@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- Mirrored from datos.astral-gt.com/seguimientodn/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 11 Jan 2026 23:52:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#6366f1">
+    <title>Seguimiento Diario - Gladiator's Team</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="public/styles.css">
+    <script src="../../cdn.jsdelivr.net/npm/chart.js%404.4.0/dist/chart.umd.min.js"></script>
+    <script src="../../cdn.jsdelivr.net/npm/html2canvas%401.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 SEGUIMIENTO DIARIO - GLADIATOR'S TEAM</h1>
+            <nav class="tabs">
+                <button class="tab-btn active" data-tab="form">📝 Registro</button>
+                <button class="tab-btn" data-tab="records">📋 Registros</button>
+                <button class="tab-btn" data-tab="stats">📈 Estadísticas</button>
+                <button class="tab-btn" data-tab="report">📄 Reporte</button>
+            </nav>
+        </header>
+
+        <!-- TAB: FORMULARIO -->
+        <div class="tab-content active" id="form-tab">
+            <div class="form-container">
+                <h2>Nuevo Registro Diario</h2>
+                <form id="daily-form">
+                    <div class="form-group">
+                        <label for="fecha">Fecha <span class="required">*</span></label>
+                        <input type="date" id="fecha" name="fecha" required max="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="agent_name">Agent Name <span class="required">*</span></label>
+                        <select id="agent_name" name="agent_name" required>
+                            <option value="">Seleccione un agente...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-vertical">
+                        <div class="form-group">
+                            <label for="app">Appointment (APP)</label>
+                            <input type="number" id="app" name="app" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="press">Presentaciones (PRESS)</label>
+                            <input type="number" id="press" name="press" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="no_show">NO SHOW</label>
+                            <input type="number" id="no_show" name="no_show" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="no_califica">No Califica</label>
+                            <input type="number" id="no_califica" name="no_califica" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="reschedule">Reschedule</label>
+                            <input type="number" id="reschedule" name="reschedule" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ref">Referidos (REF)</label>
+                            <input type="number" id="ref" name="ref" min="0" step="1" placeholder="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="alp">ALP</label>
+                            <input type="text" id="alp" name="alp" placeholder="0.00" class="alp-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dia_sig">DIA SIG</label>
+                            <input type="number" id="dia_sig" name="dia_sig" min="0" step="1" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">💾 Guardar Registro</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Limpiar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB: REGISTROS -->
+        <div class="tab-content" id="records-tab">
+            <div class="records-container">
+                <h2>Registros Guardados</h2>
+
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filter-fecha">Filtrar por Fecha:</label>
+                        <input type="date" id="filter-fecha">
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-agent">Filtrar por Agente:</label>
+                        <select id="filter-agent">
+                            <option value="">Todos los agentes</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadRecords()">🔍 Filtrar</button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">❌ Limpiar Filtros</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="records-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Agente</th>
+                                <th>APP</th>
+                                <th>PRESS</th>
+                                <th>NO SHOW</th>
+                                <th>No Califica</th>
+                                <th>Reschedule</th>
+                                <th>REF</th>
+                                <th>ALP</th>
+                                <th>DIA SIG</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-body">
+                            <tr>
+                                <td colspan="11" class="no-data">No hay registros disponibles</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: ESTADÍSTICAS -->
+        <div class="tab-content" id="stats-tab">
+            <div class="stats-container">
+                <h2>Estadísticas y Análisis</h2>
+
+                <div class="date-range">
+                    <div class="form-group">
+                        <label for="stats-start-date">Desde:</label>
+                        <input type="date" id="stats-start-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="stats-end-date">Hasta:</label>
+                        <input type="date" id="stats-end-date">
+                    </div>
+                    <button class="btn btn-primary" onclick="loadStats()">📊 Actualizar</button>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Rendimiento por Métrica</h3>
+                        <canvas id="metricsChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Top 10 Agentes - Appointments</h3>
+                        <canvas id="rankingChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>ALP por Agente</h3>
+                        <canvas id="alpChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Tendencia Diaria</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3>Distribución de Presentaciones</h3>
+                        <canvas id="pressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: REPORTE -->
+        <div class="tab-content" id="report-tab">
+            <div class="report-container">
+                <h2>Generar Reporte</h2>
+
+                <div class="report-type-selector">
+                    <button class="btn btn-secondary report-type-btn active" onclick="selectReportType('daily')">📅 Reporte Diario</button>
+                    <button class="btn btn-secondary report-type-btn" onclick="selectReportType('range')">📊 Reporte por Rango</button>
+                </div>
+
+                <div id="daily-report-options" class="report-options active">
+                    <div class="form-group">
+                        <label for="report-fecha-daily">Seleccionar Fecha:</label>
+                        <input type="date" id="report-fecha-daily">
+                    </div>
+                    <button class="btn btn-primary" onclick="generateDailyReport()">📄 Generar Reporte Diario</button>
+                </div>
+
+                <div id="range-report-options" class="report-options">
+                    <div class="date-range">
+                        <div class="form-group">
+                            <label for="report-fecha-desde">Desde:</label>
+                            <input type="date" id="report-fecha-desde">
+                        </div>
+                        <div class="form-group">
+                            <label for="report-fecha-hasta">Hasta:</label>
+                            <input type="date" id="report-fecha-hasta">
+                        </div>
+                        <button class="btn btn-primary" onclick="generateRangeReport()">📄 Generar Reporte por Rango</button>
+                    </div>
+                </div>
+
+                <div id="report-preview" class="report-preview">
+                    <div class="report-header">
+                        <h1>SEGUIMIENTO DIARIO - GLADIATOR'S TEAM</h1>
+                        <p class="report-date-range" id="report-date-range"></p>
+                    </div>
+                    <div class="report-table-container">
+                        <table class="report-table" id="report-table">
+                            <thead>
+                                <tr>
+                                    <th>AGENT NAME</th>
+                                    <th>APP</th>
+                                    <th>PRESS</th>
+                                    <th>NO SHOW</th>
+                                    <th>No Califica</th>
+                                    <th>Reschedule</th>
+                                    <th>REF</th>
+                                    <th>ALP</th>
+                                    <th>DIA SIG</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-body">
+                                <tr>
+                                    <td colspan="9" class="no-data">Seleccione una fecha para generar el reporte</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn btn-primary" onclick="printReport()">🖨️ Imprimir</button>
+                        <button class="btn btn-secondary" onclick="exportToExcel()">📊 Exportar Excel</button>
+                        <button class="btn btn-primary" onclick="takeScreenshot()">📸 Capturar Imagen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <img src="LogoDN.png" alt="Logo DN" class="footer-logo">
+            </div>
+        </footer>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <div class="loading-text">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- Modal de Edición -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Editar Registro</h2>
+                <button class="modal-close" onclick="closeEditModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <input type="hidden" id="edit-id" name="id">
+
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="text" id="edit-fecha" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Agente</label>
+                        <input type="text" id="edit-agent-name" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
+                    </div>
+
+                    <div class="form-vertical">
+                        <div class="form-group">
+                            <label for="edit-app">Appointment (APP)</label>
+                            <input type="number" id="edit-app" name="app" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-press">Presentaciones (PRESS)</label>
+                            <input type="number" id="edit-press" name="press" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-no-show">NO SHOW</label>
+                            <input type="number" id="edit-no-show" name="no_show" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-no-califica">No Califica</label>
+                            <input type="number" id="edit-no-califica" name="no_califica" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-reschedule">Reschedule</label>
+                            <input type="number" id="edit-reschedule" name="reschedule" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-ref">Referidos (REF)</label>
+                            <input type="number" id="edit-ref" name="ref" min="0" step="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-alp">ALP</label>
+                            <input type="text" id="edit-alp" name="alp" required class="alp-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-dia-sig">DIA SIG</label>
+                            <input type="number" id="edit-dia-sig" name="dia_sig" min="0" step="1" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveEdit()">💾 Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "seguimiento-gladiators.firebaseapp.com",
+    projectId: "seguimiento-gladiators",
+    storageBucket: "seguimiento-gladiators.appspot.com",
+    messagingSenderId: "XXXX",
+    appId: "XXXX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db = getFirestore(app);
+</script>
+
+    <script type="module" src="public/app.js"></script>
+// ======= HACER FUNCIONES DISPONIBLES PARA onclick (HTML) =======
+window.loadRecords = loadRecords;
+window.clearFilters = clearFilters;
+window.deleteRecord = deleteRecord;
+
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+window.saveEdit = saveEdit;
+
+window.loadStats = loadStats;
+
+window.selectReportType = selectReportType;
+window.generateDailyReport = generateDailyReport;
+window.generateRangeReport = generateRangeReport;
+window.printReport = printReport;
+window.exportToExcel = exportToExcel;
+window.takeScreenshot = takeScreenshot;
+
+</body>
+
+<!-- Mirrored from datos.astral-gt.com/seguimientodn/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 11 Jan 2026 23:52:41 GMT -->
+</html>
